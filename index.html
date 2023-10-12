@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Example</title>
+</head>
+<body>
+  <h1>WebSocket Example</h1>
+  <div id="messages"></div>
+
+  <script>
+    const messagesDiv = document.getElementById('messages');
+    const socket = new WebSocket('ws://localhost:3000');
+
+    // Listen for messages from the server
+    socket.addEventListener('message', (event) => {
+      const message = event.data;
+      messagesDiv.innerHTML += `<p>Received from server: ${message}</p>`;
+    });
+
+    // Function to send a message to the server
+    function sendMessage() {
+      const messageToSend = 'Hello, Server!';
+      socket.send(messageToSend);
+      messagesDiv.innerHTML += `<p>Sent to server: ${messageToSend}</p>`;
+    }
+
+    // Send a message every second
+    setInterval(sendMessage, 1000);
+  </script>
+</body>
+</html>
