@@ -1,31 +1,139 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>WebSocket Example</title>
+<h1><center>ARDUINO GRIDQUEST HUB</center></h1>
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 1px;
+  }
+
+  .grid-cell {
+    background-color: lightgray;
+    border: 1px solid black;
+    height: 40px;
+  }
+
+  .robot {
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+  }
+
+  .robot.north {
+    transform: rotate(-90deg);
+  }
+
+  .robot.east {
+    transform: rotate(0deg);
+  }
+
+  .robot.south {
+    transform: rotate(90deg);
+  }
+
+  .robot.west {
+    transform: rotate(180deg);
+  }
+
+  .robot-1 {
+    background-color: red;
+  }
+
+  .robot-2 {
+    background-color: yellow;
+  }
+
+  .robot-3 {
+    background-color: blue;
+  }
+
+  .robot-4 {
+    background-color: green;
+  }
+</style>
 </head>
 <body>
-  <h1>WebSocket Example LOL</h1>
-  <div id="messages"></div>
+<div class="grid">
+  <!-- Cells will be dynamically added here -->
+</div>
 
-  <script>
-    const messagesDiv = document.getElementById('messages');
-    const socket = new WebSocket('ws://localhost:3000');
+<script>
+  // Initialize the robotData array with separate dummy values and distinct colors
+  let robotData = [
+    { x: 0, y: 6, direction: "North", color: "red" },
+    { x: 7, y: 1, direction: "East", color: "yellow" },
+    { x: 3, y: 4, direction: "South", color: "blue" },
+    { x: 5, y: 2, direction: "West", color: "green" }
+  ];
 
-    // Listen for messages from the server
-    socket.addEventListener('message', (event) => {
-      const message = event.data;
-      messagesDiv.innerHTML += `<p>Received from server: ${message}</p>`;
+  // Function to get a random integer within a range
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  // Function to update robot data with new random values
+  function updateRobotData() {
+    robotData = robotData.map((robot) => {
+      // Move the robots based on their directions
+      let newX = robot.x + getRandomInt(-1, 1);
+      let newY = robot.y + getRandomInt(-1, 1);
+
+      // Ensure the robots stay within the grid boundaries (0-9)
+      newX = Math.min(9, Math.max(0, newX));
+      newY = Math.min(9, Math.max(0, newY));
+
+      return {
+        x: newX,
+        y: newY,
+        direction: robot.direction,
+        color: robot.color
+      };
     });
 
-    // Function to send a message to the server
-    function sendMessage() {
-      const messageToSend = 'Hello, Server!';
-      socket.send(messageToSend);
-      messagesDiv.innerHTML += `<p>Sent to server: ${messageToSend}</p>`;
-    }
+    // Update the grid with the new data
+    updateGrid(robotData);
+  }
 
-    // Send a message every second
-    setInterval(sendMessage, 1000);
-  </script>
+  // Function to update the grid based on robot data
+  function updateGrid(robotData) {
+    const grid = document.querySelector('.grid');
+
+    // Clear the old grid
+    grid.innerHTML = '';
+
+    for (let y = 0; y < 10; y++) {
+      for (let x = 0; x < 10; x++) {
+        const cell = document.createElement('div');
+        cell.classList.add('grid-cell');
+
+        // Check if a robot exists at this position
+        const robot = robotData.find((r) => r.x === x && r.y === y);
+        if (robot) {
+          // Add a robot element to represent the robot on the grid
+          const robotElement = document.createElement('div');
+          robotElement.classList.add('robot');
+          robotElement.classList.add(`robot-${robotData.indexOf(robot) + 1}`);
+          robotElement.style.backgroundColor = robot.color;
+
+          // Choose a suitable class for the robot direction (e.g., "north", "east", "south", "west")
+          robotElement.classList.add(robot.direction.toLowerCase());
+
+          cell.appendChild(robotElement);
+        }
+
+        grid.appendChild(cell);
+      }
+    }
+  }
+
+  // Update robot data and grid every second
+  setInterval(() => {
+    updateRobotData();
+    console.log("Updated robot data:", robotData);
+  }, 1000); // Update every 1000 milliseconds (1 second)
+</script>
 </body>
 </html>
