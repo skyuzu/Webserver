@@ -53,20 +53,67 @@
   .robot-4 {
     background-color: green;
   }
+
+  .car-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .car {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .car-1 {
+    background-color: red;
+  }
+
+  .car-2 {
+    background-color: yellow;
+  }
+
+  .car-3 {
+    background-color: blue;
+  }
+
+  .car-4 {
+    background-color: green;
+  }
 </style>
 </head>
 <body>
 <div class="grid">
   <!-- Cells will be dynamically added here -->
 </div>
+<div class="car-container">
+  <div class="car car-1">
+    <div class="car-color">Car 1</div>
+    <div class="car-orientation"></div>
+  </div>
+  <div class="car car-2">
+    <div class="car-color">Car 2</div>
+    <div class="car-orientation"></div>
+  </div>
+  <div class="car car-3">
+    <div class="car-color">Car 3</div>
+    <div class="car-orientation"></div>
+  </div>
+  <div class="car car-4">
+    <div class="car-color">Car 4</div>
+    <div class="car-orientation"></div>
+  </div>
+</div>
 
 <script>
   // Initialize the robotData array with separate dummy values and distinct colors
   let robotData = [
-    { x: 0, y: 6, direction: "North", color: "red" },
-    { x: 7, y: 1, direction: "East", color: "yellow" },
-    { x: 3, y: 4, direction: "South", color: "blue" },
-    { x: 5, y: 2, direction: "West", color: "green" }
+    { x: 10, y: 10, direction: "South", color: "red" },
+    { x: 10, y: 10, direction: "East", color: "yellow" },
+    { x: 10, y: 10, direction: "South", color: "blue" },
+    { x: 10, y: 10, direction: "West", color: "green" }
   ];
 
   // Function to get a random integer within a range
@@ -81,9 +128,9 @@
       let newX = robot.x + getRandomInt(-1, 1);
       let newY = robot.y + getRandomInt(-1, 1);
 
-      // Ensure the robots stay within the grid boundaries (0-9)
+      // Ensure the robots stay within the grid boundaries (0–9)
       newX = Math.min(9, Math.max(0, newX));
-      newY = Math.min(9, Math.max(0, newY));
+      newY = Math.min(9, Math.max(0, 9 - newY));
 
       return {
         x: newX,
@@ -95,6 +142,8 @@
 
     // Update the grid with the new data
     updateGrid(robotData);
+    // Update car orientation and orientation status
+    updateCarOrientation();
   }
 
   // Function to update the grid based on robot data
@@ -129,11 +178,21 @@
     }
   }
 
+  // Function to update car orientation and orientation status
+  function updateCarOrientation() {
+    robotData.forEach((robot, index) => {
+      const carOrientationElement = document.querySelector(`.car-${index + 1} .car-orientation`);
+      carOrientationElement.textContent = robot.direction;
+    });
+  }
+
   // Update robot data and grid every second
-  setInterval(() => {
-    updateRobotData();
-    console.log("Updated robot data:", robotData);
-  }, 1000); // Update every 1000 milliseconds (1 second)
+      updateRobotData();
+
+  // setInterval(() => {
+  //   updateRobotData();
+  //   console.log("Updated robot data:", robotData);
+  // }, 1000); // Update every 1000 milliseconds (1 second)
 </script>
 </body>
 </html>
