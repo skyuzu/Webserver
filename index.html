@@ -1,88 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-<h1><center>ARDUINO GRIDQUEST HUB</center></h1>
-<style>
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(10, 40px);
-    grid-template-rows: repeat(10, 40px);
-    gap: 1px;
-  }
+  <h1><center>ARDUINO GRIDQUEST HUB</center></h1>
+  <style>
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(10, 40px);
+      grid-template-rows: repeat(10, 40px);
+      gap: 1px;
+    }
 
-  .grid-cell {
-    background-color: lightgray;
-    border: 1px solid black;
-    height: 40px;
-  }
+    .grid-cell {
+      background-color: lightgray;
+      border: 1px solid black;
+      height: 40px;
+    }
 
-  .robot {
-    border-radius: 50%;
-    width: 10px;
-    height: 10px;
-  }
+    .robot {
+      width: 13px;
+      height: 10px;
+    }
 
-  .robot.north {
-    transform: rotate(-90deg);
-  }
+    .robot.north {
+      transform: rotate(-90deg);
+    }
 
-  .robot.east {
-    transform: rotate(0deg);
-  }
+    .robot.east {
+      transform: rotate(0deg);
+    }
 
-  .robot.south {
-    transform: rotate(90deg);
-  }
+    .robot.south {
+      transform: rotate(90deg);
+    }
 
-  .robot.west {
-    transform: rotate(180deg);
-  }
+    .robot.west {
+      transform: rotate(180deg);
+    }
 
-  .robot-1 {
-    background-color: red;
-  }
+    .robot-1 {
+      background-color: red;
+    }
 
-  .robot-2 {
-    background-color: yellow;
-  }
+    .robot-2 {
+      background-color: yellow;
+    }
 
-  .robot-3 {
-    background-color: blue;
-  }
+    .robot-3 {
+      background-color: blue;
+    }
 
-  .robot-4 {
-    background-color: green;
-  }
+    .robot-4 {
+      background-color: green;
+    }
 
-  .car-container {
-    display: flex;
-    justify-content: space-between;
-  }
+    .square {
+      width: 40px;
+      height: 40px;
+      background-color: black;
+    }
 
-  .car {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+    .car-container {
+      display: flex;
+      justify-content: space-between;
+    }
 
-  .car-1 {
-    background-color: red;
-  }
+    .car {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-  .car-2 {
-    background-color: yellow;
-  }
+    .car-1 {
+      background-color: red;
+    }
 
-  .car-3 {
-    background-color: blue;
-  }
+    .car-2 {
+      background-color: yellow;
+    }
 
-  .car-4 {
-    background-color: green;
-  }
-</style>
+    .car-3 {
+      background-color: blue;
+    }
+
+    .car-4 {
+      background-color: green;
+    }
+  </style>
 </head>
 <body>
 <div class="grid">
@@ -108,14 +113,6 @@
 </div>
 
 <script>
-  // Initialize the robotData array with separate dummy values and distinct colors
-  let robotData = [
-    { x: 10, y: 10, direction: "South", color: "red" },
-    { x: 10, y: 10, direction: "East", color: "yellow" },
-    { x: 10, y: 10, direction: "South", color: "blue" },
-    { x: 10, y: 10, direction: "West", color: "green" }
-  ];
-
   // Function to get a random integer within a range
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -141,13 +138,13 @@
     });
 
     // Update the grid with the new data
-    updateGrid(robotData);
+    updateGrid(robotData, squarePositions);
     // Update car orientation and orientation status
     updateCarOrientation();
   }
 
-  // Function to update the grid based on robot data
-  function updateGrid(robotData) {
+  // Function to update the grid based on robot data and square positions
+  function updateGrid(robotData, squarePositions) {
     const grid = document.querySelector('.grid');
 
     // Clear the old grid
@@ -173,6 +170,15 @@
           cell.appendChild(robotElement);
         }
 
+        // Check if a square exists at this position
+        const square = squarePositions.find((s) => s.x === x && s.y === y);
+        if (square) {
+          // Add a square element to represent the square on the grid
+          const squareElement = document.createElement('div');
+          squareElement.classList.add('square');
+          cell.appendChild(squareElement);
+        }
+
         grid.appendChild(cell);
       }
     }
@@ -186,13 +192,30 @@
     });
   }
 
-  // Update robot data and grid every second
-      updateRobotData();
+  // Initialize the robotData array with separate dummy values and distinct colors
+  let robotData = [
+    { x: 7, y: 10, direction: "South", color: "red" },
+    { x: 3, y: 10, direction: "East", color: "yellow" },
+    { x: 5, y: 10, direction: "South", color: "blue" },
+    { x: 4, y: 10, direction: "West", color: "green" }
+  ];
 
-  // setInterval(() => {
-  //   updateRobotData();
-  //   console.log("Updated robot data:", robotData);
-  // }, 1000); // Update every 1000 milliseconds (1 second)
+  // Define an array for the initial positions of the squares
+  const squarePositions = [
+    { x: getRandomInt(0, 9), y: getRandomInt(0, 9) },
+    { x: getRandomInt(0, 9), y: getRandomInt(0, 9) },
+    { x: getRandomInt(0, 9), y: getRandomInt(0, 9) },
+    { x: getRandomInt(0, 9), y: getRandomInt(0, 9) }
+  ];
+
+  // Call the updateGrid function to initially populate the grid
+  updateGrid(robotData, squarePositions);
+
+  // Update robot data and grid every second
+  setInterval(() => {
+    updateRobotData();
+    console.log("Updated robot data:", robotData);
+  }, 1000); // Update every 1000 milliseconds (1 second)
 </script>
 </body>
 </html>
